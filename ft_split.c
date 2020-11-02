@@ -3,77 +3,98 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ehiramat <ehiramat@student.42tokyo.>       +#+  +:+       +#+        */
+/*   By: htomohit <htomohit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/10/15 17:31:23 by ehiramat          #+#    #+#             */
-/*   Updated: 2020/11/02 23:26:33 by yikeda           ###   ########.fr       */
+/*   Created: 2020/10/17 22:00:25 by htomohit          #+#    #+#             */
+/*   Updated: 2020/11/01 11:56:17 by htomohit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int		mem_free(char **res, int k)
+static int			count_str(char *s, char c)
 {
-	while (k >= 0)
+	int		i;
+	int		flag;
+	int		count;
+
+	i = 0;
+	flag = 0;
+	count = 0;
+	while (s[i])
 	{
-		free(res[k]);
-		k--;
+		if (flag == 1 && s[i] == c)
+			flag = 0;
+		if (flag == 0 && s[i] != c)
+		{
+			flag = 1;
+			count++;
+		}
+		i++;
+	}
+	return (count);
+}
+
+static int			sep_strlen(char *str, int idx, char c)
+{
+	int		len;
+
+	len = 0;
+	while (str[idx] != c && str[idx])
+	{
+		len++;
+		idx++;
+	}
+	return (len);
+}
+
+static char			**mem_free(char **res, int idx)
+{
+	while (idx >= 0)
+	{
+		free(res[idx]);
+		idx--;
 	}
 	free(res);
-	return (0);
+	return (NULL);
 }
 
-int		ft_subsplit(char **res, char *via, int len, int c)
+static char			**create_str(char *s, char c, char **res)
 {
-	int	i;
-	int	k;
-
-	k = 0;
-	while (k < len)
-	{
-		i = 0;
-		while (via[i] != c && via[i] != '\0')
-		{
-			i++;
-		}
-		if (i > 0)
-		{
-			if (!(res[k] = ft_substr(via, 0, i)))
-				return (mem_free(res, k));
-			k++;
-		}
-		i++;
-		via = via + i;
-	}
-	res[k] = 0;
-	return (1);
-}
-
-char	**ft_split(char const *s, char c)
-{
-	char	*via;
-	char	**res;
 	int		len;
 	int		i;
+	int		j;
+	int		k;
 
-	if (!(via = ft_strtrim(s, &c)))
-		return (NULL);
-	len = 0;
 	i = 0;
-	while (via[i] != '\0')
+	k = 0;
+	while (s[i])
 	{
-		if (via[i] == c && via[i + 1] != c)
-			len++;
-		i++;
+		if (s[i] != c)
+		{
+			len = sep_strlen((char *)s, i, c);
+			if (!(res[k] = malloc(sizeof(char) * (len + 1))))
+				return (mem_free(res, k - 1));
+			j = 0;
+			while (j < len)
+				res[k][j++] = s[i++];
+			res[k++][j] = '\0';
+		}
+		else
+			i++;
 	}
-	len++;
-	if (!(res = (char **)malloc(sizeof(char *) * (len + 1))))
+	res[k] = NULL;
+	return (res);
+}
+
+char				**ft_split(char const *s, char c)
+{
+	char	**res;
+
+	if (!s)
 		return (NULL);
-	if (!(ft_subsplit(res, via, len, c)))
-	{
-		free(via);
+	if (!(res = malloc(sizeof(char *) * (count_str((char *)s, c) + 1))))
 		return (NULL);
-	}
-	free(via);
+	create_str((char *)s, c, res);
 	return (res);
 }

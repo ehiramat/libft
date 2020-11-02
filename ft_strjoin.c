@@ -6,7 +6,7 @@
 /*   By: ehiramat <ehiramat@student.42tokyo.>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/15 16:39:48 by ehiramat          #+#    #+#             */
-/*   Updated: 2020/10/26 15:27:56 by ehiramat         ###   ########.fr       */
+/*   Updated: 2020/11/02 23:19:35 by yikeda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	size_t	k;
 	size_t	size;
 	char	*res;
-	
+
 	if (!s1 && !s2)
 		return (ft_strdup(""));
 	if (!s1 && s2)
